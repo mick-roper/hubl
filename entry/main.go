@@ -26,8 +26,19 @@ func main() {
 
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 
+	router := http.NewServeMux()
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("hello, world"))
+	})
+
 	server := http.Server{
-		Addr: listenAddr,
+		Addr:         listenAddr,
+		Handler:      router,
+		ErrorLog:     log.New(os.Stdout, "webserver:", log.LstdFlags),
+		ReadTimeout:  time.Second * 5,
+		WriteTimeout: time.Second * 10,
+		IdleTimeout:  time.Second * 15,
 	}
 	server.SetKeepAlivesEnabled(true)
 
@@ -49,5 +60,5 @@ func main() {
 	}
 
 	<-done
-	log.Print("Hudl server stopped")
+	log.Print("Hubl server stopped")
 }
