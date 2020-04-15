@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"log"
 	"net/http"
@@ -11,11 +12,22 @@ import (
 	"time"
 )
 
+type (
+	topic struct {
+		Name string
+	}
+
+	topicStore interface {
+		Get() []topic
+	}
+)
+
 var (
 	sigs chan os.Signal = make(chan os.Signal, 1)
 	done chan struct{}  = make(chan struct{}, 1)
 
 	listenAddr string
+	topics     topicStore
 )
 
 func main() {
@@ -26,11 +38,7 @@ func main() {
 
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 
-	router := http.NewServeMux()
-	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("hello, world"))
-	})
+	router := buildNewRouter()
 
 	server := http.Server{
 		Addr:         listenAddr,
@@ -61,4 +69,34 @@ func main() {
 
 	<-done
 	log.Print("Hubl server stopped")
+}
+
+func buildNewRouter() http.Handler {
+	router := http.NewServeMux()
+
+	router.HandleFunc("/topic", func(w http.ResponseWriter, r *http.Request) {
+		switch method := r.Method; method {
+		case http.MethodGet:
+			{
+				topics := topics.Get()
+				bytes, err := json.Marshal(topics)
+
+				if err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+					w.Write([]byte("an error occured serialising the topics"))
+					return
+				}
+
+				w.WriteHeader(http.StatusOK)
+				w.Write(bytes)
+			}
+		default:
+			{
+				w.WriteHeader(http.StatusMethodNotAllowed)
+				w.Write([]byte("method not allowed"))
+			}
+		}
+	})
+
+	return router
 }
