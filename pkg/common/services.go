@@ -54,7 +54,7 @@ func (m *MessageProcessor) Start() {
 		for _, s := range subscriptions {
 			go func(sub *Subscription) {
 				reader := bytes.NewReader(msg.Data)
-				req, err := http.NewRequest(http.MethodPost, s.DestinationURL, reader)
+				req, err := http.NewRequest(http.MethodPost, sub.DestinationURL, reader)
 
 				if err != nil {
 					m.logger.Print(err)
