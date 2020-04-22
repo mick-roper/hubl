@@ -16,6 +16,7 @@ type (
 		store          SubscriptionStore
 	}
 
+	// SubscriptionMetrics that describe what has previously happened with this subscription
 	SubscriptionMetrics struct {
 		Success int64
 		Failure int64
@@ -39,13 +40,19 @@ func NewSubscription(topic, destinationURL string, store SubscriptionStore) (*Su
 		return nil, errors.New("desinationURL cannot be empty")
 	}
 
+	if store == nil {
+		return nil, errors.New("store cannot be nil")
+	}
+
 	return &Subscription{
 		ID:             uuid.New().String(),
 		Topic:          topic,
 		DestinationURL: destinationURL,
+		store:          store,
 	}, nil
 }
 
+// Save the subscription
 func (s *Subscription) Save() error {
 	return s.store.PutSubscription(s)
 }
