@@ -17,8 +17,7 @@ func NewSubscriptionHandler(store common.SubscriptionStore) func(http.ResponseWr
 				bytes, err := json.Marshal(subs)
 
 				if err != nil {
-					w.WriteHeader(500)
-					w.Write([]byte(fmt.SPrintf("{ \"error\": \"%v\" }", err.Error())))
+					writeError(err, w)
 					return
 				}
 
