@@ -75,7 +75,11 @@ func main() {
 func buildNewRouter() http.Handler {
 	router := http.NewServeMux()
 
-	router.HandleFunc("/topic", web.TopicHandler)
+	topicHandler := web.NewTopicHandler()
+	subscriptionHandler := web.NewSubscriptionHandler()
+
+	router.HandleFunc("/topic", topicHandler)
+	router.HandleFunc("/subscription", subscriptionHandler)
 
 	return router
 }
