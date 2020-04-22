@@ -14,7 +14,7 @@ test:
 build: build-linux build-windows
 
 build-linux:
-	GOARCH=amd64 GOOS=linux go build -o bin/linux/hubl src/main.go
+	GOARCH=amd64 GOOS=linux go build -o bin/linux/hubl main.go
 
 build-windows:
-	GOARCH=amd64 GOOS=windows go build -o bin/windows/hubl.exe src/main.go
+	GOARCH=amd64 GOOS=windows go build -o bin/windows/hubl.exe main.go

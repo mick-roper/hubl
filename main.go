@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"flag"
 	"log"
 	"net/http"
@@ -10,6 +9,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/mick-roper/hubl/pkg/web"
 )
 
 type (
@@ -74,29 +75,7 @@ func main() {
 func buildNewRouter() http.Handler {
 	router := http.NewServeMux()
 
-	router.HandleFunc("/topic", func(w http.ResponseWriter, r *http.Request) {
-		switch method := r.Method; method {
-		case http.MethodGet:
-			{
-				topics := topics.Get()
-				bytes, err := json.Marshal(topics)
-
-				if err != nil {
-					w.WriteHeader(http.StatusInternalServerError)
-					w.Write([]byte("an error occured serialising the topics"))
-					return
-				}
-
-				w.WriteHeader(http.StatusOK)
-				w.Write(bytes)
-			}
-		default:
-			{
-				w.WriteHeader(http.StatusMethodNotAllowed)
-				w.Write([]byte("method not allowed"))
-			}
-		}
-	})
+	router.HandleFunc("/topic", web.TopicHandler)
 
 	return router
 }
