@@ -16,15 +16,9 @@ type (
 )
 
 // NewSubscriptionStore creates a new subscription store
-func NewSubscriptionStore(capacity int) (*SubscriptionStore, error) {
-	if capacity < 1 {
-		return nil, errors.New("capacity must be at least 1")
-	}
-
+func NewSubscriptionStore() (*SubscriptionStore, error) {
 	return &SubscriptionStore{
-		subscriptions: make([]Subscription, capacity),
-		itemCount:     0,
-		increment:     capacity,
+		subscriptions: []Subscription{},
 	}, nil
 }
 
@@ -42,11 +36,20 @@ func (s *SubscriptionStore) GetSubscriptionsForTopic(topic string) []Subscriptio
 }
 
 // AddSubscription creates a new subscription
-func (s *SubscriptionStore) AddSubscription(s common.Subscription) error {
-	return errors.New("not implemented")
+func (s *SubscriptionStore) AddSubscription(s *common.Subscription) error {
+	if s == nil {
+		return errors.New("subscription is nil")
+	}
+
+	s.subscriptions = append(s.subscriptions, &s)
 }
 
 // DeleteSubscription deletes a subscription
 func (s *SubscriptionStore) DeleteSubscription(id string) error {
-	return errors.New("not implemented")
+	for i := range s.subscriptions {
+		if s.subscriptions[i].ID == id {
+			s.subscriptions = append(s.subscriptions[:i], s.subscriptions[i+1:]...)
+			return
+		}
+	}
 }
