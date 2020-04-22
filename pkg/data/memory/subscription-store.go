@@ -30,7 +30,15 @@ func NewSubscriptionStore(capacity int) (*SubscriptionStore, error) {
 
 // GetSubscriptionsForTopic gets all subscriptions for a topic
 func (s *SubscriptionStore) GetSubscriptionsForTopic(topic string) []Subscription {
-	panic("not implemented")
+	result := []Subscription{}
+
+	for i := range s.subscriptions {
+		if s.subscriptions[i].Topic == topic {
+			result = append(result, s.subscriptions[i])
+		}
+	}
+
+	return result
 }
 
 // AddSubscription creates a new subscription

@@ -1,6 +1,10 @@
 package common
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/google/uuid"
+)
 
 type (
 	// Subscription that describes a topic and a destination
@@ -29,6 +33,7 @@ func NewSubscription(topic, destinationURL string) (*Subscription, error) {
 	}
 
 	return &Subscription{
+		ID:             uuid.New().String(),
 		Topic:          topic,
 		DestinationURL: destinationURL,
 	}, nil
