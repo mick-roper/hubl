@@ -10,21 +10,19 @@ type (
 	// SubscriptionStore that uses an in-memory collection
 	SubscriptionStore struct {
 		subscriptions []common.Subscription
-		itemCount     int
-		increment     int
 	}
 )
 
 // NewSubscriptionStore creates a new subscription store
 func NewSubscriptionStore() (*SubscriptionStore, error) {
 	return &SubscriptionStore{
-		subscriptions: []Subscription{},
+		subscriptions: []common.Subscription{},
 	}, nil
 }
 
 // GetSubscriptionsForTopic gets all subscriptions for a topic
 func (s *SubscriptionStore) GetSubscriptionsForTopic(topic string) []Subscription {
-	result := []Subscription{}
+	result := []common.Subscription{}
 
 	for i := range s.subscriptions {
 		if s.subscriptions[i].Topic == topic {
