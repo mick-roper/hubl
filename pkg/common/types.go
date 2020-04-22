@@ -12,18 +12,25 @@ type (
 		ID             string
 		Topic          string
 		DestinationURL string
+		Metrics        SubscriptionMetrics
+		store          SubscriptionStore
+	}
+
+	SubscriptionMetrics struct {
+		Success int64
+		Failure int64
 	}
 
 	// SubscriptionStore dols subscription information
 	SubscriptionStore interface {
 		GetSubscriptionsForTopic(topic string) []Subscription
-		AddSubscription(*Subscription) error
+		PutSubscription(*Subscription) error
 		DeleteSubscription(id string) error
 	}
 )
 
 // NewSubscription creates a new Subscription object
-func NewSubscription(topic, destinationURL string) (*Subscription, error) {
+func NewSubscription(topic, destinationURL string, store SubscriptionStore) (*Subscription, error) {
 	if topic == "" {
 		return nil, errors.New("topic cannot be empty")
 	}
@@ -37,4 +44,8 @@ func NewSubscription(topic, destinationURL string) (*Subscription, error) {
 		Topic:          topic,
 		DestinationURL: destinationURL,
 	}, nil
+}
+
+func (s *Subscription) Save() error {
+	return s.store.PutSubscription(s)
 }
