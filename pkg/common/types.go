@@ -10,7 +10,7 @@ type (
 
 	// SubscriptionStore dols subscription information
 	SubscriptionStore interface {
-		GetSubscriptionsForTopic(topic string) []Topic
+		GetSubscriptionsForTopic(topic string) []Subscription
 		AddSubscription(Subscription) error
 		DeleteSubscription(id string) error
 	}

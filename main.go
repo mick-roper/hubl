@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/mick-roper/hubl/pkg/common"
 	"github.com/mick-roper/hubl/pkg/web"
 )
 
@@ -39,7 +40,7 @@ func main() {
 
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 
-	router := buildNewRouter()
+	router := buildNewRouter(nil)
 
 	server := http.Server{
 		Addr:         listenAddr,
@@ -72,11 +73,15 @@ func main() {
 	log.Print("Hubl server stopped")
 }
 
-func buildNewRouter() http.Handler {
+func buildNewRouter(store common.SubscriptionStore) http.Handler {
+	if store == nil {
+		panic("store is nil!")
+	}
+
 	router := http.NewServeMux()
 
-	topicHandler := web.NewTopicHandler()
-	subscriptionHandler := web.NewSubscriptionHandler()
+	topicHandler := web.NewTopicHandler(store)
+	subscriptionHandler := web.NewSubscriptionHandler(store)
 
 	router.HandleFunc("/topic", topicHandler)
 	router.HandleFunc("/subscription", subscriptionHandler)
