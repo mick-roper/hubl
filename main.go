@@ -37,9 +37,31 @@ func main() {
 	}
 	defer store.Close()
 
-	router := buildNewRouter(store)
+	server := buildServer(store)
 
-	server := http.Server{
+	log.Printf("server listening on port: %v", listenPort)
+	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		log.Fatalf("Server could not listen on addr %v: %v\n", listenPort, err)
+	}
+
+	<-done
+	log.Print("Hubl server stopped")
+}
+
+func buildServer(store common.SubscriptionStore) *http.Server {
+	if store == nil {
+		panic("store is nil")
+	}
+
+	router := http.NewServeMux()
+
+	topicHandler := web.NewTopicHandler(store)
+	subscriptionHandler := web.NewSubscriptionHandler(store)
+
+	router.HandleFunc("/topic", topicHandler)
+	router.HandleFunc("/subscription", subscriptionHandler)
+
+	server := &http.Server{
 		Addr:         ":" + strconv.Itoa(listenPort),
 		Handler:      router,
 		ErrorLog:     log.New(os.Stdout, "webserver:", log.LstdFlags),
@@ -61,27 +83,5 @@ func main() {
 		close(done)
 	}()
 
-	log.Printf("server listening on port: %v", listenPort)
-	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.Fatalf("Server could not listen on addr %s: %v\n", listenPort, err)
-	}
-
-	<-done
-	log.Print("Hubl server stopped")
-}
-
-func buildNewRouter(store common.SubscriptionStore) http.Handler {
-	if store == nil {
-		panic("store is nil!")
-	}
-
-	router := http.NewServeMux()
-
-	topicHandler := web.NewTopicHandler(store)
-	subscriptionHandler := web.NewSubscriptionHandler(store)
-
-	router.HandleFunc("/topic", topicHandler)
-	router.HandleFunc("/subscription", subscriptionHandler)
-
-	return router
+	return server
 }
