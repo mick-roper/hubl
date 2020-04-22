@@ -24,6 +24,7 @@ type (
 
 	// SubscriptionStore dols subscription information
 	SubscriptionStore interface {
+		GetAll() []Subscription
 		GetSubscriptionsForTopic(topic string) []Subscription
 		PutSubscription(*Subscription) error
 		DeleteSubscription(*Subscription) error

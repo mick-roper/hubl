@@ -1,6 +1,9 @@
 package web
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 func writeError(err error, w http.ResponseWriter) {
 	bytes := []byte(fmt.SPrintf("{ \"error\": \"%v\" }", err.Error()))

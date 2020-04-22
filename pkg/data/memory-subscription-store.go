@@ -20,6 +20,11 @@ func NewMemorySubscriptionStore() (*MemorySubscriptionStore, error) {
 	}, nil
 }
 
+// GetAll subscriptions
+func (s *MemorySubscriptionStore) GetAll() []common.Subscription {
+	return s.subscriptions
+}
+
 // GetSubscriptionsForTopic gets all subscriptions for a topic
 func (s *MemorySubscriptionStore) GetSubscriptionsForTopic(topic string) []common.Subscription {
 	result := []common.Subscription{}
