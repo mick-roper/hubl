@@ -55,6 +55,11 @@ func (s *MemorySubscriptionStore) DeleteSubscription(subscription *common.Subscr
 	return nil
 }
 
+// Close the store
+func (s *MemorySubscriptionStore) Close() {
+	// do nothing
+}
+
 func (s *MemorySubscriptionStore) findIndex(subscription *common.Subscription) (i int) {
 	i = -1
 	for x, sub := range s.subscriptions {
@@ -65,8 +70,4 @@ func (s *MemorySubscriptionStore) findIndex(subscription *common.Subscription) (
 	}
 
 	return
-}
-
-func (s *MemorySubscriptionStore) Close() {
-	// do nothing
 }

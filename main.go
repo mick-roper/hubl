@@ -26,7 +26,7 @@ var (
 func main() {
 	defer close(sigs)
 
-	flag.IntVar(&listenPort, "port", 8080, "server listen address")
+	flag.IntVar(&listenPort, "port", 8080, "server listen port")
 	flag.Parse()
 
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
