@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/mick-roper/hubl/pkg/common"
+	"github.com/mick-roper/hubl/pkg/data"
 	"github.com/mick-roper/hubl/pkg/web"
 )
 
@@ -30,7 +31,13 @@ func main() {
 
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 
-	router := buildNewRouter(nil)
+	store, err := data.NewMemorySubscriptionStore()
+	if err != nil {
+		panic(err)
+	}
+	defer store.Close()
+
+	router := buildNewRouter(store)
 
 	server := http.Server{
 		Addr:         ":" + strconv.Itoa(listenPort),

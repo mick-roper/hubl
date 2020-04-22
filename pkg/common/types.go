@@ -26,7 +26,8 @@ type (
 	SubscriptionStore interface {
 		GetSubscriptionsForTopic(topic string) []Subscription
 		PutSubscription(*Subscription) error
-		DeleteSubscription(id string) error
+		DeleteSubscription(*Subscription) error
+		Close()
 	}
 )
 
