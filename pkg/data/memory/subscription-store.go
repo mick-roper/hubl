@@ -27,3 +27,18 @@ func NewSubscriptionStore(capacity int) (*SubscriptionStore, error) {
 		increment:     capacity,
 	}, nil
 }
+
+// GetSubscriptionsForTopic gets all subscriptions for a topic
+func (s *SubscriptionStore) GetSubscriptionsForTopic(topic string) []Subscription {
+	panic("not implemented")
+}
+
+// AddSubscription creates a new subscription
+func (s *SubscriptionStore) AddSubscription(s common.Subscription) error {
+	return errors.New("not implemented")
+}
+
+// DeleteSubscription deletes a subscription
+func (s *SubscriptionStore) DeleteSubscription(id string) error {
+	return errors.New("not implemented")
+}
